@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Інструкція картографа-початківця v2.0 | GIS-відділ Civil 3D</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    // Запобігання FOUC (Flash of Unstyled Content)
+    (function() {
+      const savedTheme = localStorage.getItem("carto_theme") || 
+        (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ВЕРХНЯ ШАПКА -->
+  <header class="app-header">
+    <div class="brand">
+      <button class="btn-icon sidebar-toggle" id="sidebarToggle" title="Меню навігації">☰</button>
+      <div class="brand-icon">GIS</div>
+      <span>Інструкція картографа</span>
+      <span class="brand-badge">v2.0 Фінальна</span>
+    </div>
+
+    <div class="header-actions">
+      <div class="search-box">
+        <input type="text" class="search-input" id="searchInput" placeholder="Швидкий пошук... (/)" autocomplete="off">
+        <span class="search-shortcut">/</span>
+      </div>
+
+      <button class="btn-icon" id="themeToggle" title="Змінити тему оформлення">🌙</button>
+      <a href="#sec-quiz" class="btn btn-outline btn-sm">🧪 Тести</a>
+      <a href="#sec-10" class="btn btn-primary btn-sm">📋 Чекліст здачі</a>
+    </div>
+  </header>
+
+  <div class="app-container">
+    
+    <!-- БІЧНА НАВІГАЦІЯ -->
+    <aside class="app-sidebar">
+      <div class="sidebar-section-title">Навігація по інструкції</div>
+      <ul class="nav-list">
+        <li><a href="#sec-intro" class="nav-link active"><span class="nav-icon">🚀</span> Вступ та графік</a></li>
+        <li><a href="#sec-01" class="nav-link"><span class="nav-icon">📦</span> Розділ 1. Приймання проєкту</a></li>
+        <li><a href="#sec-02" class="nav-link"><span class="nav-icon">⚙️</span> Розділ 2. Робоче місце</a></li>
+        <li><a href="#sec-03" class="nav-link"><span class="nav-icon">☁️</span> Розділ 3. Хмара точок & ΔZ</a></li>
+        <li><a href="#sec-04" class="nav-link"><span class="nav-icon">✏️</span> Розділ 4. Векторизація</a></li>
+        <li><a href="#sec-05" class="nav-link"><span class="nav-icon">📍</span> Розділ 5. Точкові об'єкти</a></li>
+        <li><a href="#sec-06" class="nav-link"><span class="nav-icon">📐</span> Розділ 6. Висоти та сітка 10×10</a></li>
+        <li><a href="#sec-07" class="nav-link"><span class="nav-icon">🏔️</span> Розділ 7. Поверхня & горизонталі</a></li>
+        <li><a href="#sec-08" class="nav-link"><span class="nav-icon">📄</span> Розділ 8. Layout & аркуш</a></li>
+        <li><a href="#sec-09" class="nav-link"><span class="nav-icon">📦</span> Розділ 9. Збірка комплекту</a></li>
+        <li><a href="#sec-10" class="nav-link"><span class="nav-icon">✅</span> Розділ 10. Самоперевірка</a></li>
+        <li><a href="#sec-quiz" class="nav-link"><span class="nav-icon">🧪</span> Тести знань (18 питань)</a></li>
+        <li><a href="#sec-11" class="nav-link"><span class="nav-icon">🎓</span> Розділ 11. Перший місяць</a></li>
+        <li><a href="#sec-app-a" class="nav-link"><span class="nav-icon">📁</span> Додаток А. Пакунок новачка</a></li>
+        <li><a href="#sec-app-b" class="nav-link"><span class="nav-icon">📖</span> Додаток Б. Словник термінів</a></li>
+        <li><a href="#sec-app-c" class="nav-link"><span class="nav-icon">⚖️</span> Додаток В. Довідка рішень</a></li>
+      </ul>
+
+      <!-- ВІДЖЕТ ПРОГРЕСУ ЧЕКЛІСТА -->
+      <div class="checklist-widget">
+        <div class="checklist-header">
+          <span>Прогрес самоперевірки</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="checklist-stats">
+          <span id="checklistStatsText">0 з 0 (0%)</span>
+          <a href="#sec-10" style="font-weight: 600;">До чекліста &rarr;</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ОСНОВНИЙ ВМІСТ -->
+    <main class="app-content">
+
+      <!-- ПАНЕЛЬ ШВИДКИХ ФІЛЬТРІВ -->
+      <div class="filter-pills">
+        <button class="pill-btn active" data-filter="all">Всі матеріали</button>
+        <button class="pill-btn" data-filter="rules">⚠️ Критичні правила</button>
+        <button class="pill-btn" data-filter="checkpoints">Чекпоінти</button>
+        <button class="pill-btn" data-filter="tools">Калькулятори та інструменти</button>
+        <button class="pill-btn" data-filter="templates">Шаблони листів</button>
+        <button class="pill-btn" data-filter="quiz">🧪 Тести знань (18 питань)</button>
+      </div>
+
+      <!-- ВСТУП -->
+      <section id="sec-intro" class="guide-section" data-category="rules">
+        <div class="hero-banner">
+          <h1 class="hero-title">Інструкція картографа-початківця</h1>
+          <p class="hero-subtitle">Від хмари точок до зданого комплекту файлів. Базове керівництво GIS-відділу для роботи в <strong>AutoCAD Civil 3D 2026</strong>.</p>
+          <div class="hero-meta">
+            <span class="tag tag-primary">Версія 2.0 (Фінальна)</span>
+            <span class="tag tag-success">Israel TM Grid (WKID 2039)</span>
+            <span class="tag tag-warning">Місць для посилань: <span id="linksCountBadge">0</span></span>
+          </div>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ Правило 15 хвилин</div>
+          <p>Якщо ти застряг і за <strong>15 хвилин</strong> не зрушив з місця — <strong>питай</strong>. Не сиди годину, не намагайся «розібратися сам до вечора». П'ятнадцять хвилин — це межа, після якої самостійне колупання перестає бути навчанням і стає втратою часу. Питати — нормально й очікувано, особливо в перший місяць.</p>
+        </div>
+
+        <h2 class="section-subtitle">Орієнтир по темпу роботи</h2>
+        <div class="callout callout-info">
+          <div class="callout-title">🎯 Норматив продуктивності</div>
+          <p><strong>Один будинок із прилеглою територією — один робочий день.</strong> Це орієнтир для самоконтролю: якщо ти витрачаєш на такий обсяг 2–3 дні, справа не в старанності, а в тому, що десь є системна проблема — не налаштовані прив'язки, не використовується Crop, або ти робиш вручну те, що автоматизує плагін. Скажи про це, розберемо разом.</p>
+        </div>
+
+        <h2 class="section-subtitle">Орієнтовний 6-тижневий графік навчання</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Тиждень</th>
+                <th>Зміст навчання та практики</th>
+                <th>Чекпоінт етапу</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1</strong></td>
+                <td>Розділ 1 повністю + початок Розділу 2: контекст роботи, формати даних, софт</td>
+                <td><span class="tag tag-success">Приймання даних навчального проєкту</span></td>
+              </tr>
+              <tr>
+                <td><strong>2</strong></td>
+                <td>Розділ 2: шаблон, одиниці, шари, блоки, шрифти, плагіни, прив'язки</td>
+                <td><span class="tag tag-success">Робоче місце налаштоване</span></td>
+              </tr>
+              <tr>
+                <td><strong>3</strong></td>
+                <td>Розділи 3–4: підготовка хмари, ΔZ, правила векторизації</td>
+                <td><span class="tag tag-success">Таблиця ΔZ + виправлена хмара</span></td>
+              </tr>
+              <tr>
+                <td><strong>4</strong></td>
+                <td>Розділи 4–7 (практика): векторизація ділянки, блоки, сітка висот, поверхня</td>
+                <td><span class="tag tag-success">Векторизація + поверхня</span></td>
+              </tr>
+              <tr>
+                <td><strong>5</strong></td>
+                <td>Розділи 8–10: оформлення карти за стандартом, Layout, вивід файлів, чекліст</td>
+                <td><span class="tag tag-success">Зібраний комплект файлів</span></td>
+              </tr>
+              <tr>
+                <td><strong>6</strong></td>
+                <td>Розділ 11: перший самостійний проєкт під наглядом</td>
+                <td><span class="tag tag-success">Проєкт прийнятий замовником</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p><em>Примітка: Графік розрахований на спеціаліста з базовим досвідом в AutoCAD. Якщо досвіду в CAD немає — перед Розділом 1 додається тиждень базового AutoCAD.</em></p>
+      </section>
+
+      <!-- РОЗДІЛ 1 -->
+      <section id="sec-01" class="guide-section" data-category="rules templates checkpoints">
+        <h2 class="section-title">РОЗДІЛ 1. Що ми робимо і як приймаємо проєкт</h2>
+        <p class="section-desc">Мета: розуміти, що саме ми виробляємо, звідки беруться дані і в якому вигляді результат потрапляє до замовника.</p>
+
+        <!-- ІЛЮСТРАЦІЯ 1: WORKFLOW SVG -->
+        <div style="background:var(--bg-surface); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color); margin:20px 0; text-align:center;">
+          <h4 style="margin-bottom:12px; font-size:0.95rem; color:var(--text-dim);">СХЕМА ЖИТТЄВОГО ЦИКЛУ ПРОЄКТУ</h4>
+          <svg viewBox="0 0 850 130" style="width:100%; max-width:850px; height:auto; font-family:var(--font-sans);">
+            <defs>
+              <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#0284c7" />
+                <stop offset="100%" stop-color="#16a34a" />
+              </linearGradient>
+            </defs>
+            <rect x="10" y="35" width="130" height="60" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
+            <text x="75" y="60" font-size="12" font-weight="700" text-anchor="middle" fill="#0369a1">1. ВХІДНІ ДАНІ</text>
+            <text x="75" y="77" font-size="10" text-anchor="middle" fill="#0284c7">Хмара, рамка, GCP</text>
+
+            <path d="M 145 65 L 175 65" stroke="#0284c7" stroke-width="2" marker-end="url(#arrow)" />
+
+            <rect x="180" y="35" width="130" height="60" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" />
+            <text x="245" y="60" font-size="12" font-weight="700" text-anchor="middle" fill="#0369a1">2. ХМАРА & ΔZ</text>
+            <text x="245" y="77" font-size="10" text-anchor="middle" fill="#0284c7">ReCap .rcp, зсув &le; 5cm</text>
+
+            <path d="M 315 65 L 345 65" stroke="#0284c7" stroke-width="2" />
+
+            <rect x="350" y="35" width="140" height="60" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2" />
+            <text x="420" y="58" font-size="12" font-weight="700" text-anchor="middle" fill="#b45309">3. ВЕКТОРИЗАЦІЯ</text>
+            <text x="420" y="75" font-size="10" text-anchor="middle" fill="#d97706">Прохід 1 (3D) + Прохід 2</text>
+
+            <path d="M 495 65 L 525 65" stroke="#d97706" stroke-width="2" />
+
+            <rect x="530" y="35" width="140" height="60" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2" />
+            <text x="600" y="58" font-size="12" font-weight="700" text-anchor="middle" fill="#b45309">4. ПОВЕРХНЯ & СІТКА</text>
+            <text x="600" y="75" font-size="10" text-anchor="middle" fill="#d97706">TIN + 10x10 сітка + Z2A</text>
+
+            <path d="M 675 65 L 705 65" stroke="#16a34a" stroke-width="2" />
+
+            <rect x="710" y="35" width="130" height="60" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
+            <text x="775" y="58" font-size="12" font-weight="700" text-anchor="middle" fill="#15803d">5. КОМПЛЕКТ</text>
+            <text x="775" y="75" font-size="10" text-anchor="middle" fill="#16a34a">MAP, IDAN, SURF, REG</text>
+          </svg>
+        </div>
+
+        <h3 class="section-subtitle">1.1. Продукт</h3>
+        <p>Ми перетворюємо дані лазерного сканування або аерофотозйомки (хмару точок) на топографічний план у форматі, який вимагає замовник. Твоє завдання — не «намалювати гарну картинку», а видати геометрично точний файл, який замовник може одразу використати у своїй системі. Тому стандарт (шари, блоки, атрибути) важливий не менше, ніж сама геометрія. Файл, який виглядає правильно, але має неправильні коди шарів, для замовника непридатний.</p>
+
+        <h3 class="section-subtitle">1.2. Канали комунікації та люди</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Роль</th>
+                <th>Хто</th>
+                <th>Коли звертаєшся</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Менеджер</strong></td>
+                <td>Iryna</td>
+                <td>Усе організаційне, умови проєкту, спірні ситуації із замовником, перевірка листів, ризик зриву дедлайну</td>
+              </tr>
+              <tr>
+                <td><strong>Старший картограф</strong></td>
+                <td>Призначає Iryna на старті</td>
+                <td>Перевірка етапів роботи перший місяць, складні технічні питання</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-title">⚠️ Листи замовнику — завжди показуєш менеджеру перед відправкою</div>
+          <p>Англомовні листи замовнику перед відправкою показуєш <strong>Iryna</strong>. Завжди — не тільки перший місяць, і не тільки коли лист про проблему. Причина проста: формулювання в листі визначає, хто вважатиметься винним у затримці графіка, і читати його потім буде не тільки твій контакт.</p>
+        </div>
+
+        <h3 class="section-subtitle">1.3. Що надсилає замовник</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Дані</th>
+                <th>Формати</th>
+                <th>Обов'язково</th>
+                <th>Для чого</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Хмара точок</td>
+                <td><code>.e57</code>, <code>.las</code>, <code>.laz</code></td>
+                <td>Так</td>
+                <td>Основне джерело геометрії</td>
+              </tr>
+              <tr>
+                <td>Рамка для оцифрування</td>
+                <td>Полігон DWG / SHP</td>
+                <td>Так</td>
+                <td>Межа зони робіт</td>
+              </tr>
+              <tr>
+                <td>Контрольні точки</td>
+                <td><code>.txt</code>, <code>.csv</code></td>
+                <td>Так</td>
+                <td>Перевірка та корекція висот</td>
+              </tr>
+              <tr>
+                <td>Ортофото</td>
+                <td><code>.tif</code> з прив'язкою, <code>.jpg</code></td>
+                <td>Опція</td>
+                <td>Довідково, розпізнавання об'єктів</td>
+              </tr>
+              <tr>
+                <td>Схеми підземних комунікацій</td>
+                <td>DWG, PDF, схеми</td>
+                <td>Опція</td>
+                <td>Єдине джерело геометрії комунікацій — з хмари вони не читаються</td>
+              </tr>
+              <tr>
+                <td>Старі дані по проєкту</td>
+                <td>DWG та ін.</td>
+                <td>Опція</td>
+                <td>Контекст, попередні етапи</td>
+              </tr>
+              <tr>
+                <td>3D-модель</td>
+                <td><code>.3DML</code></td>
+                <td>Окремі випадки</td>
+                <td>Робота через TerraExplorer</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p><strong>Обов'язкові умови проєкту, які потрібно з'ясувати ДО початку роботи:</strong></p>
+        <ul>
+          <li>Номер проєкту (той, що піде в назву файлів);</li>
+          <li>Масштаб (1:250 / 1:500 / 1:1250 / 1:2500);</li>
+          <li>Формат оформлення (MAVAT / Mappit / інший);</li>
+          <li>Склад комплекту файлів на здачу (MAP / IDAN / SURFACE / CONTOUR LINES / DIS / REG);</li>
+          <li>Допустиме відхилення по висоті (поріг за замовчуванням 5 см);</li>
+          <li>Дедлайн;</li>
+          <li>Чи йде проєкт спринтами (від цього залежить схема іменування).</li>
+        </ul>
+
+        <h3 class="section-subtitle">1.4. Структура папки проєкту та збереження версій</h3>
+        <pre><code>5223_Ramla_North\
+  01_RAW\      ← сирі дані від замовника, як прийшли
+  02_CLOUD\    ← сконвертована хмара (.rcp + папка .rcs)
+  03_WORK\     ← робочі DWG + збережені версії по етапах
+  04_OUTPUT\   ← готовий комплект на здачу</code></pre>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ Версія після кожного етапу!</div>
+          <p>Закінчив етап — збережи окрему версію файлу в <code>03_WORK</code> і працюй далі вже в новій. Більшість операцій (MAPCLEAN, OVERKILL, скрипти JOT AI, Move Block to Surface) масові, і UNDO не завжди рятує.</p>
+          <pre><code>5223_WORK_01_vectorization.dwg
+5223_WORK_02_blocks.dwg
+5223_WORK_03_surface.dwg
+5223_WORK_04_layout.dwg</code></pre>
+        </div>
+
+        <h3 class="section-subtitle">1.6. Шаблони відповідей замовнику (1-Click Copy)</h3>
+        
+        <div class="template-box">
+          <div class="template-header">
+            <span>Шаблон А. Дані отримані, все в порядку (початок роботи)</span>
+            <button class="btn btn-outline btn-sm copy-btn" data-copy-target="tmpl-a">📋 Копіювати</button>
+          </div>
+          <div class="template-content" id="tmpl-a">Hello,
+Thank you for the data. We have downloaded the files successfully and checked them — the point cloud, the boundary polygon and the control points all open correctly and are in the Israel TM Grid coordinate system.
+We are starting the work now. Could you please confirm the following, so we prepare everything according to your requirements:
+– required map scale
+– required format / standard
+– list of deliverables you expect
+– the accepted vertical tolerance
+– the deadline for submission
+Thank you,
+[Ім'я]</div>
+        </div>
+
+        <div class="template-box">
+          <div class="template-header">
+            <span>Шаблон Б. Даних не вистачає або знайдено проблему</span>
+            <button class="btn btn-outline btn-sm copy-btn" data-copy-target="tmpl-b">📋 Копіювати</button>
+          </div>
+          <div class="template-content" id="tmpl-b">Hello,
+Thank you for the data. We have downloaded the files and started checking them, and we would like to clarify a few points before we begin:
+– The point cloud does not cover the entire area of the boundary polygon — there is no data in the southern part of the site.
+– We did not find the file with the control points in the package.
+Could you please send the missing data / an updated file? We will start processing as soon as we receive it, so that the schedule is not affected.
+Thank you for your help,
+[Ім'я]</div>
+        </div>
+
+        <div class="template-box">
+          <div class="template-header">
+            <span>Шаблон В. Файл пошкоджений або посилання не працює</span>
+            <button class="btn btn-outline btn-sm copy-btn" data-copy-target="tmpl-c">📋 Копіювати</button>
+          </div>
+          <div class="template-content" id="tmpl-c">Hello,
+Thank you for the link. Unfortunately we are not able to open the file — [the link has expired / the archive appears to be damaged / the file cannot be read]. I tried to open it using [name how you tried].
+Could you please re-upload it or share a new link?
+Thank you,
+[Ім'я]</div>
+        </div>
+
+        <h3 class="section-subtitle">1.8. Що ми віддаємо в результаті</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Файл</th>
+                <th>Що це</th>
+                <th>Геометрія Z</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>MAP (.dwg)</strong></td>
+                <td>Оформлена карта: блоки, шари, підписи, штриховки за стандартом.</td>
+                <td><strong>Z = 0 (плоске креслення)</strong></td>
+              </tr>
+              <tr>
+                <td><strong>SURFACE (.dwg)</strong></td>
+                <td>3D-полілінії + блоки висотних точок + побудована по них TIN-поверхня з горизонталями.</td>
+                <td>Реальне 3D</td>
+              </tr>
+              <tr>
+                <td><strong>IDAN (.dwg)</strong></td>
+                <td>Лінії та блоки, які беруть участь у побудові поверхні. Без самої поверхні. Джерело для REG і DIS.</td>
+                <td>Реальне 3D</td>
+              </tr>
+              <tr>
+                <td><strong>CONTOUR LINES (.dwg)</strong></td>
+                <td>Горизонталі окремим файлом як самостійні полілінії.</td>
+                <td>Реальне 3D</td>
+              </tr>
+              <tr>
+                <td><strong>PDF</strong></td>
+                <td>Готовий до друку аркуш карти з Layout.</td>
+                <td>2D Vector</td>
+              </tr>
+              <tr>
+                <td><strong>REG</strong></td>
+                <td>Точки, вивантажені з IDAN (обмінний формат замовника).</td>
+                <td>X, Y, Z</td>
+              </tr>
+              <tr>
+                <td><strong>DIS</strong></td>
+                <td>3D-полілінії, вивантажені з IDAN (обмінний формат замовника).</td>
+                <td>Вершини X, Y, Z</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="checkpoint-box">
+          <div class="checkpoint-title">☐ Чекпоінт Розділу 1: Приймання даних</div>
+          <div class="checklist-group">
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Дані скачані локально, папка проєкту названа за назвою хмари точок, підпапки 01–04 створені</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Хмара відкривається і стоїть у координатах Israel TM Grid (WKID 2039)</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Рамка є, хмара покриває всю її площу</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Контрольні точки завантажені в Civil 3D і лежать у межах рамки</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Ортофото (якщо є) підключене через MAPIINSERT і сідає на місце</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Відомий номер проєкту, масштаб, формат оформлення та склад комплекту</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Відомий допуск по висоті, дедлайн та чи йде проєкт спринтами</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Відомо, хто призначений твоїм старшим картографом</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Замовнику надіслано лист (погоджений з Iryna, менеджер у копії)</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- РОЗДІЛ 2 -->
+      <section id="sec-02" class="guide-section" data-category="rules checkpoints">
+        <h2 class="section-title">РОЗДІЛ 2. Робоче місце та налаштування</h2>
+        <p class="section-desc">Мета: налаштувати робоче середовище один раз, щоб не витрачати на це час у кожному проєкті.</p>
+
+        <h3 class="section-subtitle">2.1. Софт</h3>
+        <p><strong>AutoCAD Civil 3D 2026</strong> — версія суворо фіксована. Шаблони та плагіни налагоджені саме під неї. Працювати на старіших версіях заборонено.</p>
+
+        <h3 class="section-subtitle">2.4. Стандарт живе в DWG форматів</h3>
+        <div class="callout callout-info">
+          <div class="callout-title">💡 Як дізнатися шар чи блок?</div>
+          <p>Окремої паперової таблиці немає. Стандарт — це <strong>DWG-файл із форматами</strong> (Mappit / MAVAT). Відкрий його поруч із робочим кресленням:</p>
+          <ul>
+            <li><strong>Блоки — копіюєш:</strong> виділяєш у DWG форматів, <code>Ctrl+C</code> &rarr; <code>Ctrl+V</code> у робоче креслення (приходить з правильним шаром, масштабом та атрибутами).</li>
+            <li><strong>Лінії — через шар:</strong> клацаєш на зразок у форматі, дивишся шар, робиш його поточним (Set Current) і креслиш свій об'єкт.</li>
+          </ul>
+        </div>
+
+        <h3 class="section-subtitle">2.6. Одиниці та налаштування Civil 3D</h3>
+        <div class="callout callout-danger">
+          <div class="callout-title">⚠️ Одиниці перевіряються у ДВОХ місцях:</div>
+          <ol>
+            <li>Команда <code>UNITS</code> &rarr; Type: <strong>Decimal</strong>, Insertion scale: <strong>Meters</strong>.</li>
+            <li>Toolspace &rarr; Settings &rarr; правий клік на креслення &rarr; <strong>Drawing Settings &rarr; Ambient Settings &rarr; метри</strong>.</li>
+            <li>Система координат: <strong>Israel TM Grid, WKID 2039</strong> у Drawing Settings &rarr; Units and Zone.</li>
+            <li>Змінні ліній: <code>LTSCALE = 1</code>, <code>PSLTSCALE = 1</code>.</li>
+          </ol>
+        </div>
+
+        <h3 class="section-subtitle">2.7. Шрифти та підміна літер івриту (א vs ט)</h3>
+        <p>Шрифти ставляться з папки бібліотеки (<code>.shx</code> у папку <code>Fonts</code> AutoCAD, <code>.ttf</code> у систему Windows). Перезапуск обов'язковий.</p>
+        
+        <div class="hebrew-test-card">
+          <div style="font-weight: 700; margin-bottom: 6px;">Еталон перевірки правильності шрифту (не має бути знаків "?" та підміни літер):</div>
+          <div class="hebrew-sample">א.כ. · אנטנה · אבן שפה · שוחה · ע.ח. · ע.ת.</div>
+          <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:0;">⚠️ <strong>Увага на підміну:</strong> буква <strong>א (алеф)</strong> іноді підміняється на <strong>ט (тет)</strong>, якщо шрифт злетів. Підпис здається схожим, але це груба помилка.</p>
+        </div>
+
+        <h3 class="section-subtitle">2.10. Головний перемикач прив'язок: OSNAPZ</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Параметр</th>
+                <th>Значення</th>
+                <th>Коли використовувати</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>OSNAPZ = 0</strong></td>
+                <td>Бере реальну висоту Z з точки хмари</td>
+                <td><strong>Завжди при цифровці рельєфу та 3D об'єктів!</strong></td>
+              </tr>
+              <tr>
+                <td><strong>OSNAPZ = 1</strong></td>
+                <td>Ігнорує Z, кладе все в площину креслення</td>
+                <td>Тільки для 2D оформлення</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="checkpoint-box">
+          <div class="checkpoint-title">☐ Чекпоінт Розділу 2: Робоче місце налаштоване</div>
+          <div class="checklist-group">
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Civil 3D 2026 та ReCap встановлені та запускаються</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Шрифти встановлені, Civil 3D перезапущено, еталон відкривається без попереджень</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Одиниці = метри (перевірено і в UNITS, і в Drawing Settings)</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Система координат задана: Israel TM Grid, WKID 2039</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">OSNAPZ = 0; F3 та F4 увімкнені, F6 (Dynamic UCS) вимкнено</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">JOT Complex Plugin активовано через jot-auth</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">JOT AI Plugin розблоковано в Properties DLL та виконано NETLOAD</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- РОЗДІЛ 3 -->
+      <section id="sec-03" class="guide-section" data-category="rules tools checkpoints">
+        <h2 class="section-title">РОЗДІЛ 3. Підготовка та перевірка хмари точок</h2>
+        <p class="section-desc">Конвертація в ReCap, порівняння з контрольними точками та розрахунок систематичного зсуву.</p>
+
+        <!-- КАЛЬКУЛЯТОР ДЕЛЬТА Z -->
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-title">🧮 Інтерактивний калькулятор ΔZ та оцінка деформації</div>
+            <div>
+              <button class="btn btn-outline btn-sm" id="loadDeltaSampleBtn">Завантажити приклад</button>
+              <button class="btn btn-outline btn-sm" id="copyDeltaTableBtn">📋 Скопіювати таблицю</button>
+            </div>
+          </div>
+          <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:12px;">Внесіть координати Z контрольних точок замовника та заміряні Z у хмарі. Калькулятор миттєво визначить середнє ΔZ та розкид (Spread).</p>
+
+          <div class="table-wrapper" style="margin: 10px 0;">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:120px;">№ точки</th>
+                  <th>Z проєктна (GCP)</th>
+                  <th>Z у хмарі</th>
+                  <th>ΔZ (Cloud - GCP)</th>
+                  <th>Примітка</th>
+                  <th style="width:60px;">Вид.</th>
+                </tr>
+              </thead>
+              <tbody id="deltaZTableBody">
+                <!-- Рядки генеруються JS -->
+              </tbody>
+            </table>
+          </div>
+          <button class="btn btn-outline btn-sm" id="addDeltaRowBtn" style="margin-bottom:14px;">+ Додати точку</button>
+
+          <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:14px;">
+            <div><strong>Середнє зміщення ΔZ:</strong> <span id="deltaAvgOutput" style="font-family:var(--font-mono); font-size:1.1rem; color:var(--primary);">—</span></div>
+            <div><strong>Розкид між точками (Max - Min):</strong> <span id="deltaSpreadOutput" style="font-family:var(--font-mono); font-size:1.1rem; color:var(--primary);">—</span></div>
+          </div>
+
+          <div id="deltaStatusBanner" class="callout callout-info" style="margin:0;">
+            Введіть дані контрольних точок для оцінки розкиду.
+          </div>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ Поріг деформації: 5 сантиметрів</div>
+          <ul>
+            <li><strong>Розкид до 5 см:</strong> простий систематичний зсув &rarr; виправляємо командою <code>MOVE</code> всієї хмари на величину <code>-ΔZ</code>.</li>
+            <li><strong>Розкид більше 5 см:</strong> деформація хмари точок. Руками не правити! Зупиняємо роботу й надсилаємо замовнику лист (Шаблон Б).</li>
+          </ul>
+        </div>
+
+        <div class="checkpoint-box">
+          <div class="checkpoint-title">☐ Чекпоінт Розділу 3: Хмара підготовлена</div>
+          <div class="checklist-group">
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Хмара сконвертована в .rcp, зайвий шум/машини прибрані</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Хмара підключена в Civil 3D у координатах Israel TM Grid (WKID 2039)</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Перевірено мінімум 10 контрольних точок (або всі) рівномірно по площі</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Розкид ΔZ не перевищує 5 см; хмару скориговано через MOVE</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Таблицю відхилень збережено в папці проєкту</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- РОЗДІЛ 4 -->
+      <section id="sec-04" class="guide-section" data-category="rules checkpoints">
+        <h2 class="section-title">РОЗДІЛ 4. Векторизація: правила та техніка</h2>
+        <p class="section-desc">Ключовий етап створення геометрії. Головне правило: розділення на два проходи.</p>
+
+        <div class="callout callout-danger">
+          <div class="callout-title">⚠️ ДВА ПРОХОДИ, А НЕ ОДИН!</div>
+          <p><strong>Прохід 1 (Тільки для IDAN та поверхні):</strong> знімаємо виключно те, що лежить на землі (краї доріг, бордюри 2 лініями, паркани 3D, розмітка 3D, висотні точки). Усе виключно через <code>3DPOLY</code>.</p>
+          <p><strong>Прохід 2 (Тільки для карти MAP):</strong> будівлі (2D полілінії), навіси, ЛЕП, комунікації зі схем замовника. Вони не повинні потрапити у поверхню!</p>
+        </div>
+
+        <!-- ІЛЮСТРАЦІЯ 2: БОРДЮР 2 ЛІНІЯМИ -->
+        <div style="background:var(--bg-surface); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color); margin:20px 0; text-align:center;">
+          <h4 style="margin-bottom:12px; font-size:0.95rem; color:var(--text-dim);">ПРАВИЛО ЗНІМАННЯ БОРДЮРІВ: ДВІ ПАРАЛЕЛЬНІ 3D-ЛІНІЇ</h4>
+          <svg viewBox="0 0 600 180" style="width:100%; max-width:600px; height:auto; font-family:var(--font-sans);">
+            <!-- Асфальт -->
+            <path d="M 50 140 L 250 140 L 250 70 L 400 70 L 550 80" fill="none" stroke="#94a3b8" stroke-width="4" />
+            <!-- Заливка тротуару та дороги -->
+            <polygon points="50,140 250,140 250,170 50,170" fill="#cbd5e1" opacity="0.3" />
+            <polygon points="250,70 400,70 400,170 250,170" fill="#94a3b8" opacity="0.4" />
+            <polygon points="400,70 550,80 550,170 400,170" fill="#e2e8f0" opacity="0.3" />
+
+            <!-- Верхня точка 3DPOLY -->
+            <circle cx="250" cy="70" r="6" fill="#dc2626" />
+            <text x="250" y="50" font-size="12" font-weight="700" text-anchor="middle" fill="#dc2626">Верх бордюру (3DPOLY)</text>
+            <text x="250" y="32" font-size="10" text-anchor="middle" fill="var(--text-dim)">Z = 63.15 м</text>
+
+            <!-- Нижня точка 3DPOLY -->
+            <circle cx="250" cy="140" r="6" fill="#0284c7" />
+            <text x="180" y="135" font-size="12" font-weight="700" text-anchor="end" fill="#0284c7">Низ бордюру (3DPOLY)</text>
+            <text x="180" y="152" font-size="10" text-anchor="end" fill="var(--text-dim)">Z = 63.00 м (асфальт)</text>
+
+            <text x="130" y="160" font-size="11" fill="var(--text-muted)">Проїзна частина</text>
+            <text x="470" y="105" font-size="11" fill="var(--text-muted)">Тротуар</text>
+          </svg>
+        </div>
+
+        <h3 class="section-subtitle">4.3. Що бере участь у поверхні, а що ні</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th style="color:var(--success);">Бере участь — 3D Polyline (IDAN / Surface)</th>
+                <th style="color:var(--danger);">Не бере участі — 2D Polyline (Тільки MAP)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Дороги, краї асфальту, ґрунтові проїзди</td>
+                <td>Будівлі (постійні та тимчасові споруди)</td>
+              </tr>
+              <tr>
+                <td>Бордюри (окремо лінія верху, окремо лінія низу)</td>
+                <td>Навіси, козирки</td>
+              </tr>
+              <tr>
+                <td>Тротуари, бетонні площадки, сходи</td>
+                <td>Бетонні блоки на поверхні</td>
+              </tr>
+              <tr>
+                <td><strong>Паркани та підпірні стінки</strong> (критично для TIN!)</td>
+                <td>Лінії електропередач (ЛЕП)</td>
+              </tr>
+              <tr>
+                <td>Дорожня розмітка (3D)</td>
+                <td>Підземні комунікації (з паперових/PDF схем)</td>
+              </tr>
+              <tr>
+                <td>Межі рослинності, де видно ґрунт</td>
+                <td>Крони дерев та чагарники без видимого ґрунту</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ Технічні аксіоми картографа:</div>
+          <ul>
+            <li><strong>Кола заборонені:</strong> використовуємо тільки замкнені полілінії (коло не розпізнається як полігон у багатьох конвертерах).</li>
+            <li><strong>За межами рамки не цифруємо:</strong> суворо обмежуємось полігоном робіт.</li>
+            <li><strong>Дерева:</strong> висотою менше 2 м та діаметром стовбура менше 10 см не показуємо. Пеньки не знімаємо.</li>
+          </ul>
+        </div>
+
+        <div class="checkpoint-box">
+          <div class="checkpoint-title">☐ Чекпоінт Розділу 4: Векторизація виконана</div>
+          <div class="checklist-group">
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Прохід 1 завершено: всі наземні лінії знято 3D-полілініями</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Паркани знято в 3D і підготовлено для breaklines поверхні</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Дорожня розмітка знята в 3D; по пішохідних переходах обрано єдиний стиль</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Контури будівель замкнені (PEDIT Close), дублікати видалені через OVERKILL</span></label>
+            <label class="checklist-item"><input type="checkbox"><span class="item-text">Векторизацію показано та узгоджено зі старшим картографом</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- РОЗДІЛ 5 & 6 -->
+      <section id="sec-05" class="guide-section" data-category="rules tools checkpoints">
+        <h2 class="section-title">РОЗДІЛ 5–6. Точкові об'єкти, висоти та сітка 10×10</h2>
+        <p class="section-desc">Розстановка блоків, підписи об'єктів та автоматичне створення регулярної сітки висот.</p>
+
+        <h3 class="section-subtitle">Розстановка сітки 10×10 м (Покроковий алгоритм)</h3>
+        <ol>
+          <li>Створити сітку полілініями з кроком 10 м на всю зону (<code>OFFSET 10</code> по X та Y).</li>
+          <li>Виконати <code>MAPCLEAN</code> &rarr; <strong>Break crossing objects</strong> (розбиває сітку на вершини у вузлах).</li>
+          <li>Вставити блоки висотних точок у вершини: <strong>JOT Complex Plugin &rarr; Blocks on Vertices</strong>.</li>
+          <li>Очистити дублікати через <code>MAPCLEAN</code>.</li>
+          <li>Після побудови поверхні виділити всі блоки сітки &rarr; <strong>Move Block to Surface</strong> (садить блоки на поверхню).</li>
+          <li>Запустити функцію <strong>Z2A (JOT Plugin)</strong> — переносить Z координату блоку в текстовий атрибут HEIGHT!</li>
+        </ol>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 Важливе правило висот підписів:</div>
+          <p><strong>Підписи та анотації завжди лежать у Z = 0!</strong> Самі блоки об'єктів та пікети мають реальну просторову висоту Z, але текстові назви не повинні висіти в повітрі.</p>
+        </div>
+      </section>
+
+      <!-- РОЗДІЛ 7 -->
+      <section id="sec-07" class="guide-section" data-category="tools rules checkpoints">
+        <h2 class="section-title">РОЗДІЛ 7. Поверхня та горизонталі</h2>
+        <p class="section-desc">Створення TIN Surface, перевірка рельєфу та підготовка горизонталей.</p>
+
+        <!-- КАЛЬКУЛЯТОР МАСШТАБУ ТА ГОРИЗОНТАЛЕЙ -->
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-title">📐 Калькулятор масштабу, кроку горизонталей та аркуша</div>
+          </div>
+          <div class="tool-grid">
+            <div class="form-group">
+              <label for="scaleCalcSelect">Масштаб креслення:</label>
+              <select id="scaleCalcSelect" class="form-control">
+                <option value="250" selected>1:250 (Основний детальний)</option>
+                <option value="500">1:500 (Основний генеральний)</option>
+                <option value="1250">1:1250</option>
+                <option value="2500">1:2500</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Основні горизонталі (Minor):</label>
+              <div id="calcMinorInterval" style="font-weight:700; font-size:1.1rem; color:var(--primary); padding-top:6px;">0.25 м</div>
+            </div>
+            <div class="form-group">
+              <label>Потовщені (Major):</label>
+              <div id="calcMajorInterval" style="font-weight:700; font-size:1.1rem; color:var(--primary); padding-top:6px;">1.25 м</div>
+            </div>
+            <div class="form-group">
+              <label>Висота шрифту:</label>
+              <div id="calcTextHeight" style="font-weight:700; font-size:1.1rem; color:var(--primary); padding-top:6px;">0.40 м</div>
+            </div>
+          </div>
+          <div style="background:var(--bg-muted); padding:10px 14px; border-radius:var(--radius-sm); font-size:0.85rem;">
+            Масштаб Viewport у Layout: <code id="calcVpScale">1/250XP</code> | Рекомендований аркуш: <strong id="calcPaperRec">ISO A1</strong>
+          </div>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ Горизонталі та будівлі:</div>
+          <p>Над будівлями горизонталей бути не повинно! Горизонталі всередині контурів будинків обов'язково вирізаються або вимикаються через Mask Boundary.</p>
+        </div>
+
+        <h3 class="section-subtitle">7.2. Витягування горизонталей у CONTOUR_LINES.dwg</h3>
+        <ol>
+          <li>Скопіювати TIN-поверхню в нове порожнє креслення.</li>
+          <li>Застосувати команду <code>EXPLODE</code> <strong>двічі</strong> &rarr; поверхня розпадеться на самостійні полілінії горизонталей.</li>
+          <li>Зберегти як <code>[Номер]_[Дата]_CONTOUR_LINES.dwg</code>.</li>
+        </ol>
+      </section>
+
+      <!-- РОЗДІЛ 8 & 9 -->
+      <section id="sec-08" class="guide-section" data-category="rules templates checkpoints">
+        <h2 class="section-title">РОЗДІЛ 8–9. Layout, фінальна збірка та здача</h2>
+        <p class="section-desc">Оформлення аркуша, генерація REG/DIS та комплектація здачі.</p>
+
+        <!-- ІЛЮСТРАЦІЯ 3: ПОРІВНЯННЯ ФАЙЛІВ -->
+        <div style="background:var(--bg-surface); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color); margin:20px 0;">
+          <h4 style="margin-bottom:12px; font-size:0.95rem; color:var(--text-dim); text-align:center;">РІЗНИЦЯ МІЖ ФАЙЛАМИ КОМПЛЕКТУ</h4>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+            <div style="border:1px solid var(--border-color); border-radius:8px; padding:14px; background:var(--bg-card);">
+              <h5 style="color:var(--primary); margin-bottom:6px;">MAP.dwg</h5>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">Плоске креслення (<strong>Elevation = 0</strong>). Містить будівлі, блоки з підписами, штриховки, комунікації, рамку та штамп.</p>
+            </div>
+            <div style="border:1px solid var(--border-color); border-radius:8px; padding:14px; background:var(--bg-card);">
+              <h5 style="color:var(--primary); margin-bottom:6px;">IDAN.dwg</h5>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">Тільки чисті <strong>3D-полілінії</strong> та блоки висотних точок. Жодних будинків чи тексту! Джерело для REG/DIS.</p>
+            </div>
+            <div style="border:1px solid var(--border-color); border-radius:8px; padding:14px; background:var(--bg-card);">
+              <h5 style="color:var(--primary); margin-bottom:6px;">SURFACE.dwg</h5>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">Повна <strong>TIN-поверхня</strong> з динамічними горизонталями, побудована по breaklines та висотах.</p>
+            </div>
+            <div style="border:1px solid var(--border-color); border-radius:8px; padding:14px; background:var(--bg-card);">
+              <h5 style="color:var(--primary); margin-bottom:6px;">REG & DIS</h5>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">Текстові файли координат точок (REG) та ліній (DIS), вивантажені плагіном з IDAN.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-danger">
+          <div class="callout-title">⚠️ Тест зворотного імпорту REG / DIS:</div>
+          <p>Після генерації файлів <code>.reg</code> та <code>.dis</code> функцією <em>Export REG/DIS</em> обов'язково створи нове порожнє креслення та виконай <strong>Import REG/DIS</strong>. Переконайся за 2 хвилини, що всі точки мають координати, а лінії не розсипалися.</p>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ Схема назв файлів:</div>
+          <pre><code>4747_191222_MAP.dwg
+4747_191222_IDAN.dwg
+4747_191222_SURFACE.dwg
+4747_191222_CONTOUR_LINES.dwg
+4747_191222_IDAN.reg
+4747_191222_IDAN.dis</code></pre>
+          <p><strong>Дата в назві — це дата фактичної відправки замовнику</strong>, а не день створення креслення.</p>
+        </div>
+      </section>
+
+      <!-- РОЗДІЛ 10: ПОВНИЙ ЧЕКЛІСТ САМОПЕРЕВІРКИ -->
+      <section id="sec-10" class="guide-section" data-category="rules checkpoints">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <h2 class="section-title" style="margin-bottom:0;">РОЗДІЛ 10. Інтерактивний чекліст самоперевірки</h2>
+          <div>
+            <button class="btn btn-outline btn-sm" id="resetChecklistBtn">Скинути всі</button>
+            <button class="btn btn-primary btn-sm" id="exportChecklistBtn">📋 Скопіювати звіт перевірки</button>
+          </div>
+        </div>
+        <p class="section-desc" style="margin-top:10px;">Пройди цей чекліст перед кожною здачею роботи. Стан зберігається автоматично у вашому браузері.</p>
+
+        <h3 class="section-subtitle">10.1. Базові нормативи кроку</h3>
+        <div class="callout callout-info" style="font-family:var(--font-mono); font-size:0.9rem;">
+          Висоти з поліліній &rarr; кожні 10 м<br>
+          Підпис (текст назви) &rarr; кожні 20 м<br>
+          Поворот тексту й блоків &rarr; строго за напрямком об'єкта, читабельно
+        </div>
+
+        <h3 class="section-subtitle">10.2. Лінійні об'єкти</h3>
+        <div class="checklist-group">
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Бордюри, тротуари: висоти кожні 10 м, підпис кожні 20 м, правильний поворот</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Дорога, край асфальту: висоти кожні 10 м, підпис кожні 20 м, блоки всередині дороги</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Дорожня розмітка: 3D, висоти кожні 10 м, входить у TIN та IDAN</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Паркани: 3D, висоти кожні 10 м, підпис кожні 20 м, додані в TIN як breaklines</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Підпірні стінки: 3D верх і низ, відмітки кожні 20 м або в місцях зміни перепаду</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Укоси: 3D верх і низ, берг-штрихи з кроком 2 м, правильний напрямок схилу</span></label>
+        </div>
+
+        <h3 class="section-subtitle">10.3–10.4. Водопропуски, сходи та ворота</h3>
+        <div class="checklist-group">
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Водопропуск: визначено Top та Invert levels, діаметр труби, правильний шар</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Сходи: висоти верхнього та нижнього майданчиків, стрілка підйому, перила</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Ворота: текст на полілінії, розрив у лінії огорожі</span></label>
+        </div>
+
+        <h3 class="section-subtitle">10.5. Будівлі</h3>
+        <div class="checklist-group">
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Висоти на кожному куті будівлі (від землі)</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Висота на даху та висота на вході</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Штриховка та кількість поверхів (якщо > 1)</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Горизонталі під будівлею видалені повністю</span></label>
+        </div>
+
+        <h3 class="section-subtitle">10.6–10.7. Точкові об'єкти та блоки</h3>
+        <div class="checklist-group">
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Люки, колодязі: точка в центрі, відмітка кришки Z</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Опори освітлення та ЛЕП: контур фундаменту, блок, атрибут OWNER = חח"י</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Дерева: точка в центрі стовбура, висота дерева та назва</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Блоки не накладаються один на одного та не перекривають тексти</span></label>
+        </div>
+
+        <h3 class="section-subtitle">10.9. Фінальна технічна перевірка файлів</h3>
+        <div class="checklist-group">
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Шар «0» абсолютно порожній</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">У файлі MAP всі об'єкти сплющені до Elevation = 0</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Немає жодного знаку питання «?» у підписах</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">Іврит перевірено візуально на підміну літер א / ט</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">IDAN містить виключно 3D-полілінії та блоки висот без сміття</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">REG та DIS згенеровані та перевірені зворотним імпортом</span></label>
+          <label class="checklist-item"><input type="checkbox"><span class="item-text">PDF експортовано, відкрито окремо й перевірено візуально</span></label>
+        </div>
+      </section>
+
+      <!-- РОЗДІЛ ТЕСТІВ ДЛЯ САМОПЕРЕВІРКИ -->
+      <section id="sec-quiz" class="guide-section" data-category="quiz">
+        <h2 class="section-title">🧪 Тести для самоперевірки картографа-початківця</h2>
+        <p class="section-desc">18 детальних тестових запитань за всіма розділами інструкції. Неправильні відповіді підсвічуються <strong>червоним</strong> із детальним поясненням помилки, а правильні — <strong>зеленим</strong>.</p>
+
+        <!-- ТАБЛО РЕЗУЛЬТАТІВ (SCOREBOARD) -->
+        <div class="quiz-scoreboard">
+          <div class="score-stats">
+            <div class="score-circle" id="quizScoreCircle" style="--percent: 0;">
+              <span id="quizPercentText">0%</span>
+            </div>
+            <div class="score-details">
+              <div class="score-title">Загальний результат тестування</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">
+                Відповідей: <strong id="quizAnsweredCount">0 / 18</strong> | 
+                Правильно: <strong id="quizCorrectCount" style="color: var(--success);">0</strong> | 
+                Помилок: <strong id="quizWrongCount" style="color: var(--danger);">0</strong>
+              </div>
+              <div style="margin-top: 6px;">
+                <span id="quizStatusBadge" class="score-badge pending">Тест не розпочато</span>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm quiz-filter-btn active" data-filter="all">Усі 18 питань</button>
+            <button class="btn btn-outline btn-sm quiz-filter-btn" data-filter="wrong" style="color: var(--danger);">Лише помилки (червоні)</button>
+            <button class="btn btn-outline btn-sm quiz-filter-btn" data-filter="unanswered">Невирішені</button>
+            <button class="btn btn-outline btn-sm" id="resetQuizBtn">Скинути тест</button>
+          </div>
+        </div>
+
+        <!-- КОНТЕЙНЕР ПИТАНЬ -->
+        <div id="quizQuestionsContainer">
+          <!-- Генерується через app.js -->
+        </div>
+      </section>
+
+      <!-- РОЗДІЛ 11 -->
+      <section id="sec-11" class="guide-section" data-category="rules">
+        <h2 class="section-title">РОЗДІЛ 11. Перший місяць та вихід на самостійну роботу</h2>
+        <p class="section-desc">Як взаємодіяти зі старшим картографом та вийти на самостійний рівень.</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ Не згоден із зауваженням — обговорюй ДО того, як переробив!</div>
+          <p>Якщо ти вважаєш, що твоє рішення правильне (наприклад, основа стовпа в кущах не читається), скажи про це старшому картографу <strong>до внесення правок</strong>. Питання: <em>«Я зробив так, бо в хмарі не видно основи через рослинність — як краще вчинити в цьому випадку?»</em> заощадить тобі кілька годин переробки.</p>
+        </div>
+
+        <h3 class="section-subtitle">Критерії готовності до повної самостійності:</h3>
+        <ul>
+          <li>Визначаєш тип об'єкта (точка / 3D-полілінія / полілінія, 1 чи 2 лінії) миттєво без інструкції;</li>
+          <li>Норматив: <strong>один будинок з прилеглою територією робиш за 1 робочий день</strong>;</li>
+          <li>Копіюєш блоки та шари з DWG форматів за кілька секунд;</li>
+          <li>Бачиш проблему в поверхні за виглядом горизонталей (воронки, піки) і одразу знаєш, де шукати помилкову висоту;</li>
+          <li>Сам ставиш правильні запитання замовнику на старті до початку роботи.</li>
+        </ul>
+      </section>
+
+      <!-- ДОДАТКИ -->
+      <section id="sec-app-a" class="guide-section" data-category="rules">
+        <h2 class="section-title">ДОДАТОК А. Що потрібно видати новачку в перший день</h2>
+        <p class="section-desc">Усі матеріали та трекер посилань з позначкою «ДОДАТИ ПОСИЛАННЯ».</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Категорія матеріалу</th>
+                <th>Що саме</th>
+                <th>Посилання на сховище</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Шаблон креслення</td>
+                <td>.dwt під формат і масштаб проєкту</td>
+                <td><span class="missing-link-tag">ДОДАТИ ПОСИЛАННЯ</span></td>
+              </tr>
+              <tr>
+                <td>DWG форматів</td>
+                <td>Носій стандарту (шари та блоки)</td>
+                <td><span class="missing-link-tag">ДОДАТИ ПОСИЛАННЯ</span></td>
+              </tr>
+              <tr>
+                <td>Папка шрифтів</td>
+                <td>Повний комплект шрифтів (.shx, .ttf)</td>
+                <td><span class="missing-link-tag">ДОДАТИ ПОСИЛАННЯ</span></td>
+              </tr>
+              <tr>
+                <td>Приклади робіт</td>
+                <td>Еталонні готові проєкти (MAP, IDAN, SURFACE)</td>
+                <td><span class="missing-link-tag">ДОДАТИ ПОСИЛАННЯ</span></td>
+              </tr>
+              <tr>
+                <td>Шаблон OFEK</td>
+                <td>template_LVL_0_2.0 (для проєктів OFEK)</td>
+                <td><span class="missing-link-tag">ДОДАТИ ПОСИЛАННЯ</span></td>
+              </tr>
+              <tr>
+                <td>Відеоінструкції JOT</td>
+                <td>Уроки по роботі з JOT Complex Plugin (3–6.mp4)</td>
+                <td><span class="missing-link-tag">ДОДАТИ ПОСИЛАННЯ</span></td>
+              </tr>
+              <tr>
+                <td>Відео Agisoft</td>
+                <td>Збірка хмари з фото з дрона</td>
+                <td><span class="missing-link-tag">ДОДАТИ ПОСИЛАННЯ</span></td>
+              </tr>
+              <tr>
+                <td>Рельєфна підложка</td>
+                <td>Файл itm.mpt для TerraExplorer</td>
+                <td><span class="missing-link-tag">ДОДАТИ ПОСИЛАННЯ</span></td>
+              </tr>
+              <tr>
+                <td>Спільний список правок</td>
+                <td>Таблиця типових зауважень замовників</td>
+                <td><span class="missing-link-tag">ДОДАТИ ПОСИЛАННЯ</span></td>
+              </tr>
+              <tr>
+                <td>Навчальний проєкт</td>
+                <td>Реальний зданий проєкт для тренування</td>
+                <td><span class="missing-link-tag">ДОДАТИ ПОСИЛАННЯ</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ДОДАТОК Б: СЛОВНИК -->
+      <section id="sec-app-b" class="guide-section" data-category="rules">
+        <h2 class="section-title">ДОДАТОК Б. Словник картографічних термінів</h2>
+        <p class="section-desc">Швидкий довідник термінів, форматів та понять.</p>
+
+        <div class="glossary-grid">
+          <div class="glossary-card">
+            <div class="glossary-term">Хмара точок (Point Cloud)</div>
+            <div class="glossary-def">Масив тривимірних точок (X, Y, Z), отриманий лазерним скануванням (LiDAR) або фотограмметрією. Головне первинне джерело просторових даних.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">TIN Surface</div>
+            <div class="glossary-def">Triangulated Irregular Network — цифрова модель поверхні рельєфу з нерегулярної сітки трикутників, побудована по структурних лініях та висотних точках.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">Breakline (Структурна лінія)</div>
+            <div class="glossary-def">3D-полілінія перелому рельєфу (бровка, бордюр, підпірна стіна, паркан, кромка покриття). Ребра TIN-трикутників ніколи не перетинають breakline.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">IDAN (.dwg)</div>
+            <div class="glossary-def">Креслення, що містить тільки чисту векторну 3D-геометрію (лінії та точки поверхні). Сама TIN-поверхня в ньому відсутня. Джерело експорту REG та DIS.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">REG & DIS</div>
+            <div class="glossary-def">Текстові обмінні формати замовника: REG містить координати та відмітки пікетів, DIS — координати вершин 3D-поліліній.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">Префікс «-X»</div>
+            <div class="glossary-def">Внутрішній стандарт назви шару нашої команди: геометрія на таких шарах не береться в побудову поверхні рельєфу.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">Israel TM Grid (WKID 2039)</div>
+            <div class="glossary-def">Державна прямокутна проєкція координат Ізраїлю на базі еліпсоїда GRS80. Усі робочі креслення відкриваються суворо в цій системі.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-term">MAPIINSERT</div>
+            <div class="glossary-def">Спеціальна команда AutoCAD Map 3D / Civil 3D для вставки геоприв'язаних растрових файлів (GeoTIFF) у їхніх рідних координатах без ручного масштабування.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ДОДАТОК В: ДОВІДКА РІШЕНЬ -->
+      <section id="sec-app-c" class="guide-section" data-category="rules">
+        <h2 class="section-title">ДОДАТОК В. Зведена довідка рішень</h2>
+        <p class="section-desc">Остаточні стандарти команди, які усувають суперечності старих інструкцій.</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Питання / Вузол</th>
+                <th>Затверджене рішення</th>
+                <th>Де описано</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Де живе стандарт</td>
+                <td>У DWG форматів, окремий файл під кожен формат. Окремої паперової таблиці немає</td>
+                <td>Розділ 2.4</td>
+              </tr>
+              <tr>
+                <td>Дорожня розмітка</td>
+                <td>3D-полілінії, обов'язково йде в IDAN і в поверхню</td>
+                <td>Розділи 4.1, 4.3</td>
+              </tr>
+              <tr>
+                <td>Паркани в поверхні</td>
+                <td>Обов'язково 3D-полілінії, додаються як breakline</td>
+                <td>Розділ 4.3</td>
+              </tr>
+              <tr>
+                <td>SURFACE і IDAN</td>
+                <td>Два різні файли: SURFACE з TIN-поверхнею, IDAN без неї</td>
+                <td>Розділи 1.8, 9.1</td>
+              </tr>
+              <tr>
+                <td>Блоки у вузли сітки</td>
+                <td>Функція Blocks on Vertices з JOT Complex Plugin</td>
+                <td>Розділ 6.3</td>
+              </tr>
+              <tr>
+                <td>Версія Civil 3D</td>
+                <td>Суворо 2026</td>
+                <td>Розділ 2.1</td>
+              </tr>
+              <tr>
+                <td>Крок горизонталей</td>
+                <td>Формула: Масштаб &divide; 1000 (для 1:250 = 0.25 м)</td>
+                <td>Розділ 7.1</td>
+              </tr>
+              <tr>
+                <td>Поріг ΔZ</td>
+                <td>5 см як робочий ліміт між точками; понад 5 см — деформація</td>
+                <td>Розділ 3.4</td>
+              </tr>
+              <tr>
+                <td>Підземні комунікації</td>
+                <td>Геометрія виключно зі схем замовника, а не з хмари</td>
+                <td>Розділи 4.9, 8.1</td>
+              </tr>
+              <tr>
+                <td>Іменування файлів</td>
+                <td>Номер від замовника + дата фактичної здачі</td>
+                <td>Розділ 1.8</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
